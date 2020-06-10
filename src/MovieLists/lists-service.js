@@ -12,14 +12,14 @@ const MovieListsService = {
         return rows[0];
       });
   },
-  getById(db, id) {
-    return db.from("movienight_lists").select("*").where("id", id).first()
+    getById(db, id) {
+      return db.from("movienight_lists").select("*").where("id", id).first()
   },
-  deleteList(db, id) {
-    return db("movienight_lists").where({ id }).delete()
+    deleteList(db, id) {
+      return db("movienight_lists").where({ id }).delete()
   },
-  updateList(db, id, newMovieListFields) {
-    return db("movienight_lists").where({ id }).update(newMovieListFields)
+    updateList(db, id, newMovieListFields) {
+      return db("movienight_lists").where({ id }).update(newMovieListFields)
   },
 };
 

@@ -4,7 +4,7 @@ const xss = require("xss");
 const ListsServices = require("./lists-service");
 
 const listsRouter = express.Router();
-const jsonParser = express.json();
+const bodyParser = express.json();
 
 const serializeList = (list) => ({
   id: list.id,
@@ -21,25 +21,23 @@ listsRouter
       })
       .catch(next);
   })
-  .post(jsonParser, (req, res, next) => {
-    const { name } = req.body;
-    const newList = { name };
+  .post(bodyParser, (req, res, next) => {
+    const newList = req.body;
     const knex = req.app.get("db");
-    if (!name) {
+    if (!newList.name) {
       return res.status(400).json({
         error: { message: "Must have a list name" },
       });
     }
-
     ListsServices.insertList(knex, newList)
       .then((list) => {
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${list.id}`))
-          .json(serializeFolder(list));
+          .json(list);
       })
       .catch(next);
-  });
+   });
 
 listsRouter
   .route("/:id")

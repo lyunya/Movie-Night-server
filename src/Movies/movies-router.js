@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const MoviesService = require("./movies-service");
 const moviesRouter = express.Router();
-const jsonParser = express.json();
+const bodyParser = express.json();
 
 const movie = (movie) => ({
    id: movie.id,
@@ -23,9 +23,9 @@ moviesRouter
       })
       .catch(next);
   })
-  .post(jsonParser, (req, res, next) => {
-    const { title, overview, poster_path } = req.body;
-    const newMovie = { title, overview, poster_path };
+  .post(bodyParser, (req, res, next) => {
+    const { title, overview, poster_path, movielist_id, votes } = req.body;
+    const newMovie = { title, overview, poster_path, movielist_id, votes };
     for (const [key, value] of Object.entries(newMovie)) {
       if (value == null) {
         return res.status(400).json({
@@ -33,53 +33,62 @@ moviesRouter
         });
       }
     }
-
     MoviesService.insertMovie(req.app.get("db"), newMovie)
       .then((movie) => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${movie.id}`))
+
           .json(movie);
       })
       .catch(next);
-  });
-moviesRouter
-  .route("/:id")
-  .all((req, res, next) => {
-    MoviesService.getById(req.app.get("db"), req.params.id)
-      .then((movie) => {
-        if (!movie) {
-          return res.status(404).json({
-            error: { message: `Movie doesn't exist` },
-          });
-        }
-        res.movie = movie; // save the movie for the next middleware
-        next(); // don't forget to call next so the next middleware happens!
-      })
-      .catch(next);
   })
-  .get((req, res, next) => {
-    res.json(res.movie);
-  })
-  .delete((req, res, next) => {
-    MoviesService.deleteMovie(req.app.get("db"), req.params.id)
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
-  })
-  .patch(jsonParser, (req, res, next) => {
-    const {  votes } = req.body;
-    const movieToUpdate = { votes };
+  .patch(bodyParser, (req, res, next) => {
+    const { id, title, overview, poster_path, movielist_id, votes } = req.body;
 
-    MoviesService.updateMovie(
-      req.app.get("db"),
-      req.params.id,
-      movieToUpdate
-    )
+    const movieToUpdate = { id, title, overview, poster_path, movielist_id, votes };
+    console.log(movieToUpdate, 'this is movie to update')
+    
+    MoviesService.updateMovie(req.app.get("db"), movieToUpdate)
       .then((numRowsAffected) => {
         res.status(204).end();
       })
       .catch(next);
   });
+
+
+// moviesRouter
+//   .route("/:id")
+//   .all((req, res, next) => {
+//     MoviesService.getById(req.app.get("db"), req.params.id)
+//       .then((movie) => {
+//         if (!movie) {
+//           return res.status(404).json({
+//             error: { message: `Movie doesn't exist` },
+//           });
+//         }
+//         res.movie = movie; // save the movie for the next middleware
+//         next(); // don't forget to call next so the next middleware happens!
+//       })
+//       .catch(next);
+//   })
+//   .get((req, res, next) => {
+//     res.json(res.movie);
+//   })
+//   .delete((req, res, next) => {
+//     MoviesService.deleteMovie(req.app.get("db"), req.params.id)
+//       .then(() => {
+//         res.status(204).end();
+//       })
+//       .catch(next);
+//   })
+//   .patch(bodyParser, (req, res, next) => {
+//     const { votes } = req.body;
+//     const movieToUpdate = { votes };
+
+//     MoviesService.updateMovie(req.app.get("db"), req.params.id, movieToUpdate)
+//       .then((numRowsAffected) => {
+//         res.status(204).end();
+//       })
+//       .catch(next);
+//   });
 module.exports = moviesRouter;

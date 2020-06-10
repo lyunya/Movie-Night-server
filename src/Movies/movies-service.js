@@ -18,8 +18,8 @@ const MoviesService = {
   deleteMovie(db, id) {
     return db("movienight_movies").where({ id }).delete();
   },
-  updateMovie(knex, id, newMovieVotes) {
-    return knex("movienight_movies").where({ id }).update(newMovieVotes);
+  updateMovie(db, newMovieVotes) {
+    return db("movienight_movies").where("id", id).update(newMovieVotes);
   },
 };
 
