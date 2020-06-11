@@ -8,7 +8,7 @@ const bodyParser = express.json();
 
 const serializeList = (list) => ({
   id: list.id,
-  list_name: xss(list.name),
+  name: xss(list.name),
 });
 
 listsRouter
@@ -37,7 +37,15 @@ listsRouter
           .json(list);
       })
       .catch(next);
-   });
+  })
+  .delete((req, res, next) => {
+    console.log(req.params.id, "LOOK HERE")
+    ListsServices.deleteList(req.app.get("db"), req.body)
+      .then((affected) => {
+        res.status(204).end();
+      })
+      .catch(next);
+  });
 
 listsRouter
   .route("/:id")
@@ -58,7 +66,8 @@ listsRouter
     res.json(serializeList(res.name));
   })
   .delete((req, res, next) => {
-    ListsServices.deleteList(req.app.get("db"), req.params.id)
+    console.log(req.params.id, "LOOK HERE");
+    ListsServices.deleteList(req.app.get("db"), req.body)
       .then((affected) => {
         res.status(204).end();
       })

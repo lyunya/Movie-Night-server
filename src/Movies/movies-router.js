@@ -42,13 +42,17 @@ moviesRouter
       })
       .catch(next);
   })
-  .patch(bodyParser, (req, res, next) => {
+  .put(bodyParser, (req, res, next) => {
     const { id, title, overview, poster_path, movielist_id, votes } = req.body;
-
-    const movieToUpdate = { id, title, overview, poster_path, movielist_id, votes };
-    console.log(movieToUpdate, 'this is movie to update')
-    
-    MoviesService.updateMovie(req.app.get("db"), movieToUpdate)
+    const movieToUpdate = {
+      id,
+      title,
+      overview,
+      poster_path,
+      movielist_id,
+      votes,
+    };
+    MoviesService.updateMovie(req.app.get("db"), movieToUpdate.id, movieToUpdate)
       .then((numRowsAffected) => {
         res.status(204).end();
       })

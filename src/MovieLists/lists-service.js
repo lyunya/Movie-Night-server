@@ -16,7 +16,7 @@ const MovieListsService = {
       return db.from("movienight_lists").select("*").where("id", id).first()
   },
     deleteList(db, id) {
-      return db("movienight_lists").where({ id }).delete()
+      return db("movienight_lists").where({ id }).delete();
   },
     updateList(db, id, newMovieListFields) {
       return db("movienight_lists").where({ id }).update(newMovieListFields)

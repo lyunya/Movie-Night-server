@@ -18,7 +18,7 @@ const MoviesService = {
   deleteMovie(db, id) {
     return db("movienight_movies").where({ id }).delete();
   },
-  updateMovie(db, newMovieVotes) {
+  updateMovie(db, id, newMovieVotes) {
     return db("movienight_movies").where("id", id).update(newMovieVotes);
   },
 };
