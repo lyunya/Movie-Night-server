@@ -3,7 +3,7 @@ INSERT INTO
 VALUES
     (
         'leonmarbukh@gmail.com',
-        'Tapwater1'
+        '$12$npeBluOAvKMvba58kRSh9uq0py6NyPm.E4LheuiDKFNVbKtlOTFlS'
     ),
     ('demo@demo.com',
     'demo');
