@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const xss = require("xss");
 const ListsServices = require("./lists-service");
-
+const { requireAuth } = require("../middleware/jwt-auth");
 const listsRouter = express.Router();
 const bodyParser = express.json();
 
@@ -21,7 +21,8 @@ listsRouter
       })
       .catch(next);
   })
-  .post(bodyParser, (req, res, next) => {
+  .post(requireAuth, bodyParser, (req, res, next) => {
+    // const { }
     const newList = req.body;
     const knex = req.app.get("db");
     if (!newList.name) {
@@ -39,8 +40,7 @@ listsRouter
       .catch(next);
   })
   .delete((req, res, next) => {
-    console.log(req.params.id, "LOOK HERE")
-    ListsServices.deleteList(req.app.get("db"), req.body)
+    ListsServices.deleteList(req.app.get("db"), req.body.id)
       .then((affected) => {
         res.status(204).end();
       })
@@ -67,7 +67,7 @@ listsRouter
   })
   .delete((req, res, next) => {
     console.log(req.params.id, "LOOK HERE");
-    ListsServices.deleteList(req.app.get("db"), req.body)
+    ListsServices.deleteList(req.app.get("db"), req.params.id)
       .then((affected) => {
         res.status(204).end();
       })

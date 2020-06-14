@@ -8,6 +8,7 @@ const winston = require("winston");
 const listsRouter = require('./MovieLists/lists-router');
 const moviesRouter = require('./Movies/movies-router')
 const MovieListsService = require("./MovieLists/lists-service");
+const authRouter = require("./auth/auth-router");
 
 const app = express();
 
@@ -21,17 +22,18 @@ app.get('/', (req, res) => {
     res.send('Hello, MovieNight!')
 })
 
-app.get('/lists', (req, res, next) => {
-  const KnexInstance = req.app.get('db')
-  MovieListsService.getAllLists(KnexInstance)
-    .then(lists => {
-      res.json(lists)
-    })
-    .catch(next)
-})
+// app.get('/lists', (req, res, next) => {
+//   const KnexInstance = req.app.get('db')
+//   MovieListsService.getAllLists(KnexInstance)
+//     .then(lists => {
+//       res.json(lists)
+//     })
+//     .catch(next)
+// })
 
 app.use('/api/lists', listsRouter);
-app.use('/api/movies', moviesRouter)
+app.use('/api/movies', moviesRouter);
+app.use("/api/auth", authRouter);
 
  app.use(function errorHandler(error, req, res, next) {
    let response
