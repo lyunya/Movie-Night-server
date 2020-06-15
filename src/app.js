@@ -9,6 +9,7 @@ const listsRouter = require('./MovieLists/lists-router');
 const moviesRouter = require('./Movies/movies-router')
 const MovieListsService = require("./MovieLists/lists-service");
 const authRouter = require("./auth/auth-router");
+const usersRouter = require("./users/users-router");
 
 const app = express();
 
@@ -22,18 +23,11 @@ app.get('/', (req, res) => {
     res.send('Hello, MovieNight!')
 })
 
-// app.get('/lists', (req, res, next) => {
-//   const KnexInstance = req.app.get('db')
-//   MovieListsService.getAllLists(KnexInstance)
-//     .then(lists => {
-//       res.json(lists)
-//     })
-//     .catch(next)
-// })
 
 app.use('/api/lists', listsRouter);
 app.use('/api/movies', moviesRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 
  app.use(function errorHandler(error, req, res, next) {
    let response
@@ -45,14 +39,5 @@ app.use("/api/auth", authRouter);
    }
    res.status(500).json(response)
  })
-
- // set up winston
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'info.log' })
-  ]
-});
 
 module.exports = app;   
