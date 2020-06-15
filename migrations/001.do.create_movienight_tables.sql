@@ -20,4 +20,3 @@ CREATE TABLE movienight_movies(
     movielist_id int REFERENCES movienight_lists(id) ON DELETE CASCADE NOT NULL,
     votes int NOT NULL
 );
-
