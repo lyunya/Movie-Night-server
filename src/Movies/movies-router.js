@@ -56,7 +56,7 @@ moviesRouter
       .then((numRowsAffected) => {
         res.status(204).end();
       })
-      .catch(next);
+    .catch(next);
   });
 
 

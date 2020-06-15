@@ -1,3 +1,7 @@
+  
+const bcrypt = require('bcryptjs')
+const jwt = require("jsonwebtoken")
+
 function makeUsersArray() {
   return [
     {
@@ -18,27 +22,27 @@ function makeUsersArray() {
   ];
 }
 
-function makeMovieListsArray(users) {
+function makeMovieListsArray() {
   return [
     {
       id: 1,
       name: "Tuesday Thrillers",
-      user_id: users[0].id,
+      user_id: 1
     },
     {
       id: 2,
       name: "RomCom Saturdays",
-      user_id: users[1].id,
+      user_id: 2
     },
     {
       id: 3,
       name: "Friday Zoom Night",
-      user_id: users[2].id,
+      user_id: 3
     },
   ];
 }
 
-function makeMoviesArray(lists) {
+function makeMoviesArray() {
   return [
     {
       id: 1,
@@ -48,7 +52,7 @@ function makeMoviesArray(lists) {
       genre: "Science Fiction",
       runtime: "123 minutes",
       poster_path: "/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg",
-      movielist_id: lists[0].id,
+      movielist_id: 1,
       votes: 0
     },
     {
@@ -59,7 +63,7 @@ function makeMoviesArray(lists) {
       genre: "romantic-comedy",
       runtime: "120 minutes",
       poster_path: "/5jdLnvALCpK1NkeQU1z4YvOe2dZ.jpg",
-      movielist_id: lists[1].id,
+      movielist_id: 2,
       votes: 0
     },
     {
@@ -70,7 +74,7 @@ function makeMoviesArray(lists) {
       genre: "action",
       runtime: "90 minutes",
       poster_path: "/aQvJ5WPzZgYVDrxLX4R6cLJCEaQ.jpg",
-      movielist_id: lists[2].id,
+      movielist_id: 1,
       votes: 0
     },
     {
@@ -81,7 +85,7 @@ function makeMoviesArray(lists) {
       genre: "action",
       runtime: "100 minutes",
       poster_path: "/y95lQLnuNKdPAzw9F9Ab8kJ80c3.jpg",
-      movielist_id: lists[0].id,
+      movielist_id: 3,
       votes: 0
     },
     {
@@ -92,7 +96,7 @@ function makeMoviesArray(lists) {
       genre: "action",
       runtime: "150 minutes",
       poster_path: "/iZf0KyrE25z1sage4SYFLCCrMi9.jpg",
-      movielist_id: lists[0].id,
+      movielist_id: 1,
       votes: 0
     },
     {
@@ -102,7 +106,7 @@ function makeMoviesArray(lists) {
       genre: "childrens",
       runtime: "90 minutes",
       poster_path: "/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg",
-      movielist_id: lists[1].id,
+      movielist_id: 2,
       votes: 0
     },
     {
@@ -113,59 +117,12 @@ function makeMoviesArray(lists) {
       genre: "thriller",
       runtime: "115 minutes",
       poster_path: "/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
-      movielist_id: lists[2].id,
+      movielist_id: 3,
       votes: 0
     },
   ];
 }
 
-function makeExpectedMovieList(users, lists, movies = []) {
-  const user = users.find((user) => user.id === movies.movielist_id);
-
-  const number_of_movies = movies.filter(
-    (movies) => movies.movielist_id === lists.id
-  ).length;
-
-  return {
-    id: article.id,
-    style: article.style,
-    title: article.title,
-    content: article.content,
-    date_created: article.date_created.toISOString(),
-    number_of_comments,
-    author: {
-      id: author.id,
-      user_name: author.user_name,
-      full_name: author.full_name,
-      nickname: author.nickname,
-      date_created: author.date_created.toISOString(),
-      date_modified: author.date_modified || null,
-    },
-  };
-}
-
-function makeExpectedArticleComments(users, articleId, comments) {
-  const expectedComments = comments.filter(
-    (comment) => comment.article_id === articleId
-  );
-
-  return expectedComments.map((comment) => {
-    const commentUser = users.find((user) => user.id === comment.user_id);
-    return {
-      id: comment.id,
-      text: comment.text,
-      date_created: comment.date_created.toISOString(),
-      user: {
-        id: commentUser.id,
-        user_name: commentUser.user_name,
-        full_name: commentUser.full_name,
-        nickname: commentUser.nickname,
-        date_created: commentUser.date_created.toISOString(),
-        date_modified: commentUser.date_modified || null,
-      },
-    };
-  });
-}
 
 
 function cleanTables(db) {
@@ -197,7 +154,37 @@ function cleanTables(db) {
   );
 }
 
-function seedMovieListTables(db, lists, movies, users = []) {
+function seedUsers(db, users) {
+  const preppedUsers = users.map((user) => ({
+    ...user,
+    password: bcrypt.hashSync(user.password, 1),
+  }));
+  return db
+    .into("movienight_users")
+    .insert(preppedUsers)
+    .then(() =>
+      // update the auto sequence to stay in sync
+      db.raw(`SELECT setval('movienight_users_id_seq', ?)`, [
+        users[users.length - 1].id,
+      ])
+    );
+}
+
+function seedMoviesTables(db, movies) {
+  return db
+  .into('movienight_movies')
+    .then(() =>
+      db
+        .into('movielist_movies')
+        .insert([movies])
+        .then(() => 
+         db.raw(`SELECT setval('movienight_movies_id_seq', ?)`, [
+        movies[movies.length - 1].id,
+      ]))
+    )
+    }
+
+function seedMovieListTables(db, lists, movies, users) {
   // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async (trx) => {
     await trx.into("movienight_users").insert(users);
@@ -221,15 +208,23 @@ function seedMovieListTables(db, lists, movies, users = []) {
   });
 }
 
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+  const token = jwt.sign({ user_id: user.id }, secret, {
+    subject: user.user_name,
+    algorithm: "HS256",
+  });
+  return `Bearer ${token}`;
+}
 
-module.exports = {
-  makeUsersArray,
-  makeArticlesArray,
-  makeExpectedArticle,
-  makeExpectedArticleComments,
-  makeCommentsArray,
 
-  makeArticlesFixtures,
-  cleanTables,
-  seedArticlesTables,
-};
+  module.exports = {
+    makeUsersArray,
+    makeMovieListsArray,
+    makeMoviesArray,
+    cleanTables,
+    seedMovieListTables,
+    seedMoviesTables,
+    seedUsers,
+    makeAuthHeader,
+  };
+

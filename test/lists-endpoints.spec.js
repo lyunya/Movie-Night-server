@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const knex = require("knex");
 const app = require("../src/app");
-const { makeListsArray } = require('./lists.fixtures')
+const { makeMovieListsArray } = require("./test-helpers");
 
 describe.only("Lists Endpoints", function () {
     let db;
@@ -21,7 +21,7 @@ describe.only("Lists Endpoints", function () {
     afterEach("cleanup", () => db("movienight_lists").truncate());
 
     context('Given there are lists in the database', () => {
-        const testLists = makeListsArray()
+        const testLists = makeMovieListsArray();
         
         beforeEach('insert lists', () => {
             return db
