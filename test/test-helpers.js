@@ -27,17 +27,17 @@ function makeMovieListsArray() {
     {
       id: 1,
       name: "Tuesday Thrillers",
-      user_id: 1
+      user_id: 1,
     },
     {
       id: 2,
       name: "RomCom Saturdays",
-      user_id: 2
+      user_id: 2,
     },
     {
       id: 3,
       name: "Friday Zoom Night",
-      user_id: 3
+      user_id: 3,
     },
   ];
 }

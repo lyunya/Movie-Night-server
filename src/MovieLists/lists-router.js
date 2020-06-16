@@ -9,7 +9,7 @@ const bodyParser = express.json();
 const serializeList = (list) => ({
   id: list.id,
   name: xss(list.name),
-  userId: list.user_id,
+  user_id: list.user_id,
 });
 
 listsRouter
