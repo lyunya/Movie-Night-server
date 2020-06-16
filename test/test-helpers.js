@@ -1,6 +1,6 @@
-  
 const bcrypt = require('bcryptjs')
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const MovieListsService = require('../src/MovieLists/lists-service');
 
 function makeUsersArray() {
   return [
@@ -22,27 +22,27 @@ function makeUsersArray() {
   ];
 }
 
-function makeMovieListsArray() {
+function makeMovieListsArray(users) {
   return [
     {
       id: 1,
       name: "Tuesday Thrillers",
-      user_id: 1,
+      user_id: users[0].id,
     },
     {
       id: 2,
       name: "RomCom Saturdays",
-      user_id: 2,
+      user_id: users[0].id,
     },
     {
       id: 3,
       name: "Friday Zoom Night",
-      user_id: 3,
+      user_id: users[0].id,
     },
   ];
 }
 
-function makeMoviesArray() {
+function makeMoviesArray(lists) {
   return [
     {
       id: 1,
@@ -52,8 +52,8 @@ function makeMoviesArray() {
       genre: "Science Fiction",
       runtime: "123 minutes",
       poster_path: "/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg",
-      movielist_id: 1,
-      votes: 0
+      movielist_id: lists[0].id,
+      votes: 0,
     },
     {
       id: 2,
@@ -63,8 +63,8 @@ function makeMoviesArray() {
       genre: "romantic-comedy",
       runtime: "120 minutes",
       poster_path: "/5jdLnvALCpK1NkeQU1z4YvOe2dZ.jpg",
-      movielist_id: 2,
-      votes: 0
+      movielist_id: lists[1].id,
+      votes: 0,
     },
     {
       id: 3,
@@ -74,8 +74,8 @@ function makeMoviesArray() {
       genre: "action",
       runtime: "90 minutes",
       poster_path: "/aQvJ5WPzZgYVDrxLX4R6cLJCEaQ.jpg",
-      movielist_id: 1,
-      votes: 0
+      movielist_id: lists[2].id,
+      votes: 0,
     },
     {
       id: 4,
@@ -85,8 +85,8 @@ function makeMoviesArray() {
       genre: "action",
       runtime: "100 minutes",
       poster_path: "/y95lQLnuNKdPAzw9F9Ab8kJ80c3.jpg",
-      movielist_id: 3,
-      votes: 0
+      movielist_id: lists[0].id,
+      votes: 0,
     },
     {
       id: 5,
@@ -96,18 +96,19 @@ function makeMoviesArray() {
       genre: "action",
       runtime: "150 minutes",
       poster_path: "/iZf0KyrE25z1sage4SYFLCCrMi9.jpg",
-      movielist_id: 1,
-      votes: 0
+      movielist_id: lists[1].id,
+      votes: 0,
     },
     {
       id: 6,
       title: "The Lion King",
-      overview: "Simba idolizes his father, King Mufasa, and takes to heart his own royal destiny. But not everyone in the kingdom celebrates the new cub's arrival. Scar, Mufasa's brother—and former heir to the throne—has plans of his own. The battle for Pride Rock is ravaged with betrayal, tragedy and drama, ultimately resulting in Simba's exile. With help from a curious pair of newfound friends, Simba will have to figure out how to grow up and take back what is rightfully his.",
+      overview:
+        "Simba idolizes his father, King Mufasa, and takes to heart his own royal destiny. But not everyone in the kingdom celebrates the new cub's arrival. Scar, Mufasa's brother—and former heir to the throne—has plans of his own. The battle for Pride Rock is ravaged with betrayal, tragedy and drama, ultimately resulting in Simba's exile. With help from a curious pair of newfound friends, Simba will have to figure out how to grow up and take back what is rightfully his.",
       genre: "childrens",
       runtime: "90 minutes",
       poster_path: "/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg",
-      movielist_id: 2,
-      votes: 0
+      movielist_id: lists[2].id,
+      votes: 0,
     },
     {
       id: 7,
@@ -117,10 +118,27 @@ function makeMoviesArray() {
       genre: "thriller",
       runtime: "115 minutes",
       poster_path: "/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
-      movielist_id: 3,
-      votes: 0
+      movielist_id: lists[0].id,
+      votes: 0,
     },
   ];
+}
+
+function makeExpectedMovieList(users, movielist){
+  const user = users.find(user => user.id === MovieListsService.user_id)
+
+  return {
+    id: 1,
+    name: "Tuesday Thrillers",
+    user_id: user,
+  }
+}
+
+function makeMovieListFixtures(){
+  const testUsers = makeUsersArray()
+  const testMovieLists = makeMovieListsArray(testUsers)
+
+  return {testUsers, testMovieLists}
 }
 
 
@@ -158,16 +176,16 @@ function seedUsers(db, users) {
   const preppedUsers = users.map((user) => ({
     ...user,
     password: bcrypt.hashSync(user.password, 1),
-  }));
+  }))
   return db
     .into("movienight_users")
     .insert(preppedUsers)
     .then(() =>
       // update the auto sequence to stay in sync
       db.raw(`SELECT setval('movienight_users_id_seq', ?)`, [
-        users[users.length - 1].id,
-      ])
-    );
+        users[users.length - 1].id],
+        )
+    )
 }
 
 function seedMoviesTables(db, movies) {
@@ -221,6 +239,8 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     makeUsersArray,
     makeMovieListsArray,
     makeMoviesArray,
+    makeExpectedMovieList,
+    makeMovieListFixtures,
     cleanTables,
     seedMovieListTables,
     seedMoviesTables,
