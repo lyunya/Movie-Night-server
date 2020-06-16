@@ -35,7 +35,7 @@ describe("Lists Endpoints", function () {
         })//end context no lists
         context(`Given lists in the db`,()=>{
             const testUsers = makeUsersArray()
-            const testlists = makeMovieListsArray()
+            const testlists = makeMovieListsArray(testUsers);
 
             beforeEach(`insert users and lists`,()=>{
                 return db
@@ -52,7 +52,7 @@ describe("Lists Endpoints", function () {
                     .get('/api/lists')
                     .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                     .expect(200, testlists)
-            })//end it with goals in db
-        })//end context goals in db       
-    })//end describe GET
+            })
+        })     
+    })
 });

@@ -19,9 +19,9 @@ const  testUser  = testUsers[0]
 
   after("disconnect from db", () => db.destroy());
 
-  before("cleanup", () => testUsers.cleanTables(db));
+  before("cleanup", () => helpers.cleanTables(db));
 
-  afterEach("cleanup", () => testUsers.cleanTables(db));
+  afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe(`POST /api/auth/login`, () => {
     beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
