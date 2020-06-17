@@ -4,7 +4,7 @@ const app = require("../src/app");
 const { makeMovieListsArray } = require("./test-helpers");
 const { makeUsersArray } = require("./test-helpers");
 
-describe("Lists Endpoints", function () {
+describe("Movielists Endpoint", function () {
     let db
 
     before("make knex instance", () => {
