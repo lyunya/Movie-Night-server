@@ -56,12 +56,13 @@ const  testUser  = testUsers[0]
      const userValidCreds = {
        email: testUser.email,
        password: testUser.password,
-     };
+     }
      const expectedToken = jwt.sign(
-       { user_id: testUser.id }, // payload
+       { user_id: testUser.id },// payload
        process.env.JWT_SECRET,
        {
          subject: testUser.email,
+         expiresIn: process.env.JWT_EXPIRY,
          algorithm: "HS256",
        }
      );
