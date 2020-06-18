@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const MovieListsService = require("../src/MovieLists/lists-service");
 
 function makeUsersArray() {
   return [

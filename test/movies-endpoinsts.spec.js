@@ -34,7 +34,7 @@ describe("Movies Endpoint", function () {
                 .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .expect(200,[])
             })
-        })//end context no lists
+        })
         context(`Given movies in the db`,()=>{
             const testUsers = makeUsersArray()
             const testLists = makeMovieListsArray(testUsers);

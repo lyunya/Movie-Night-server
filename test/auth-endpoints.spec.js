@@ -62,7 +62,6 @@ const  testUser  = testUsers[0]
        process.env.JWT_SECRET,
        {
          subject: testUser.email,
-         expiresIn: process.env.JWT_EXPIRY,
          algorithm: "HS256",
        }
      );

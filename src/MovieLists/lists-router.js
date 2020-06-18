@@ -23,7 +23,6 @@ listsRouter
       .catch(next);
   })
   .post(requireAuth, bodyParser, (req, res, next) => {
-    // const { }
     const newList = req.body;
     const knex = req.app.get("db");
     if (!newList.name) {

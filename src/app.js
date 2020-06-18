@@ -5,7 +5,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require('./config');
 const listsRouter = require('./MovieLists/lists-router');
-const moviesRouter = require('./Movies/movies-router')
+const moviesRouter = require('./Movies/movies-router');
 const authRouter = require("./auth/auth-router");
 const usersRouter = require("./users/users-router");
 
