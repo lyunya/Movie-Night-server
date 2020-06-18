@@ -58,8 +58,8 @@ const  testUser  = testUsers[0]
        password: testUser.password,
      }
      const expectedToken = jwt.sign(
-       { user_id: testUser.id },// payload
-       process.env.JWT_SECRET,
+       { id: testUser.id },// payload
+        process.env.JWT_SECRET,
        {
          subject: testUser.email,
          algorithm: "HS256",
@@ -70,6 +70,7 @@ const  testUser  = testUsers[0]
        .send(userValidCreds)
        .expect(200, {
          authToken: expectedToken,
+         userId: testUser.id,
        })
    })
   });

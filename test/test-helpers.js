@@ -207,7 +207,7 @@ function seedMovieListTables(db, lists, movies, users) {
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
-    subject: user.user_name,
+    subject: user.email,
     algorithm: "HS256",
   });
   return `Bearer ${token}`;
