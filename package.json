@@ -14,13 +14,15 @@
     "deploy": "git push heroku master"
   },
   "keywords": [],
-   "engines": {
-   "node": "12.16.1"
- },
+  "engines": {
+    "node": "12.16.1"
+  },
   "author": "Leon Marbukh",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^7.3.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
     "mocha": "^7.1.2",
     "nodemon": "^2.0.3",
     "postgrator-cli": "^3.3.0",

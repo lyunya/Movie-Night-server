@@ -10,7 +10,7 @@ usersRouter.post("/", BodyParser, (req, res, next) => {
     if (!req.body[field])
       return res.status(400).json({
         error: `Missing '${field}' in request body`,
-      })
+      });
 
   const passwordError = UsersService.validatePassword(password);
 
@@ -26,14 +26,15 @@ usersRouter.post("/", BodyParser, (req, res, next) => {
         const newUser = {
           email,
           password: hashedPassword,
-        }
+        };
         return UsersService.insertUser(req.app.get("db"), newUser).then(
           (user) => {
             res.status(201).json(UsersService.serializeUser(user));
-          })
-      })
+          }
+        );
+      });
     })
-    .catch(next)
-})
+    .catch(next);
+});
 
 module.exports = usersRouter;

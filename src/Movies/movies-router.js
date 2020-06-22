@@ -42,11 +42,15 @@ moviesRouter
       movielist_id,
       votes,
     };
-    MoviesService.updateMovie(req.app.get("db"), movieToUpdate.id, movieToUpdate)
+    MoviesService.updateMovie(
+      req.app.get("db"),
+      movieToUpdate.id,
+      movieToUpdate
+    )
       .then((numRowsAffected) => {
         res.status(204).end();
       })
-    .catch(next);
+      .catch(next);
   });
 
 module.exports = moviesRouter;
