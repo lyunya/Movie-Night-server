@@ -7,13 +7,13 @@ https://floating-mountain-13173.herokuapp.com/
 
 ## API Documentation
 
-### Routes
+## Routes
 #### Login endpoint
 '/api/auth/login'  
 
-Method: Post  
+##### Method: Post  
 Required:  ```{ email: [string],  
-    string: [string] }```
+    password: [string] }```
  
 Success Response:  
 Code: 200  
@@ -21,14 +21,15 @@ Sample Data: ```{
         "authToken": 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF6IjoxNTKYOTQwNjk0LCJzdWIiOiJsZW9ubWFyYnVraEBnbWFpbC5jb19ifQ.XbnLTDqAI1rkPlTr2BTSCILwqsVqET9CFrTgrbAzu4
         "userId": 1
     }```  
+
 Error Response:  
 Code: 400  
 Content: ```{ error: "Incorrect email or password }```  
-
+___
 #### Movie List endpoint  
 '/api/lists'  
 
-Method: Get  
+##### Method: Get  
 Returns all lists  
 Success Response:  
 Code: 200  
@@ -38,7 +39,7 @@ Sample Data: ```{
         "user_id": 1
     }```  
 
-Method: Post  
+##### Method: Post  
 Inserts new movie list  
 Required:  ```{ name: [string]}```
 Success Response:   
@@ -49,17 +50,17 @@ Error Response:
 Code: 400  
 Content: ```{ message: "Must have a list name" }```  
 
-Method: Delete  
+##### Method: Delete  
 Deletes movie list object from database  
 Required:  ```{ id: [integer] }```
         
 Success Response:   
 Code: 204  
-
+___
 #### Movies endpoint  
 '/api/movies'  
 
-Method: Get  
+##### Method: Get  
 Returns all movies  
 Success Response:  
 Code: 200  
@@ -72,7 +73,7 @@ Sample Data: ```{
         "votes": 41
     }```  
 
-Method: Post  
+##### Method: Post  
 Inserts new movie object  
 Required: ```{
         title: [string],
@@ -85,11 +86,12 @@ Required: ```{
 Success Response:   
 Code: 201  
 Content: Movie object in JSON  
+
 Error Response:  
 Code: 400  
 Content: ```{ error: "Missing ${key} in request body" }```  
 
-Method: Put  
+##### Method: Put  
 Updates vote count in movie object  
 Required:  ```{ id: [integer]
         title: [string]
@@ -100,10 +102,11 @@ Required:  ```{ id: [integer]
 
 Success Response:   
 Code: 204  
-
+___
 #### Users endpoint  
 '/api/users'  
-Method: Post  
+
+##### Method: Post  
 Inserts new user  
 Required: ```{ email: [string],
         password: [string] }```
@@ -111,6 +114,7 @@ Required: ```{ email: [string],
 Success Response:   
 Code: 201  
 Content: user object in JSON ```{ "id": [integer], "email": [string] }```  
+
 Error Response:  
 Code: 400  
 Content: ```{ error: "Missing ${field} in request body" } ```  
